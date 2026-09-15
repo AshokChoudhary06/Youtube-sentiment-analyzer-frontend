@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; width: 300px; padding: 15px; }
+        h3 { margin-top: 0; color: #ff0000; }
+        button { width: 100%; padding: 10px; background: #065fd4; color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background: #00328a; }
+        .results { margin-top: 15px; display: none; }
+        .stat { margin-bottom: 5px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <h3>Comment Analyzer</h3>
+    <p id="status">Open a YouTube video to begin.</p>
+    
+    <button id="analyzeBtn">Analyze Comments</button>
+    
+    <div id="results" class="results">
+        <div class="stat">🟢 Positive: <span id="posCount">0</span></div>
+        <div class="stat">⚪ Neutral: <span id="neuCount">0</span></div>
+        <div class="stat">🔴 Negative: <span id="negCount">0</span></div>
+        <hr>
+        <div class="stat"><b>Total: <span id="totalCount">0</span></b></div>
+    </div>
+
+    <!-- Links to the logic script we will write next -->
+    <script src="popup.js"></script>
+</body>
+</html>

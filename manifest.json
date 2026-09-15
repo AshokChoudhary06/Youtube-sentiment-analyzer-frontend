@@ -1,3 +1,16 @@
 {
-    "data": "ready"
+  "manifest_version": 3,
+  "name": "YouTube Comment Analyzer",
+  "version": "1.0",
+  "description": "Analyzes the sentiment of YouTube comments using ML.",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1:8000/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
 }
