@@ -1,30 +1,150 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <style>
-        body { font-family: Arial, sans-serif; width: 300px; padding: 15px; }
-        h3 { margin-top: 0; color: #ff0000; }
-        button { width: 100%; padding: 10px; background: #065fd4; color: white; border: none; cursor: pointer; font-weight: bold; }
-        button:hover { background: #00328a; }
-        .results { margin-top: 15px; display: none; }
-        .stat { margin-bottom: 5px; font-size: 14px; }
+        :root {
+            --yt-red: #FF0000;
+            --pos-color: #2E7D32;
+            --neu-color: #616161;
+            --neg-color: #C62828;
+            --bg-color: #F9F9F9;
+            --card-bg: #FFFFFF;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            width: 320px;
+            margin: 0;
+            padding: 16px;
+            background-color: var(--bg-color);
+            color: #212121;
+        }
+
+        .header { display: flex; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #E0E0E0; }
+        .header h3 { margin: 0; font-size: 16px; color: #0F0F0F; }
+        
+        .brand-icon {
+            background-color: var(--yt-red);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        #status { font-size: 13px; color: #606060; text-align: center; margin-bottom: 16px; min-height: 20px; }
+
+        button {
+            width: 100%; padding: 12px; background-color: #0F0F0F; color: white;
+            border: none; border-radius: 8px; cursor: pointer; font-weight: 600;
+            font-size: 14px; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button:hover:not(:disabled) { background-color: #272727; transform: translateY(-1px); }
+        button:disabled { background-color: #E0E0E0; color: #9E9E9E; cursor: not-allowed; box-shadow: none; }
+
+        #results { display: none; margin-top: 20px; animation: fadeIn 0.3s ease-in; }
+
+        /* Metric Cards */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+        .stat-card { background: var(--card-bg); padding: 12px; border-radius: 8px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); border: 1px solid #EEEEEE; }
+        .stat-card.full-width { grid-column: span 2; }
+        .stat-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .stat-value { font-size: 24px; font-weight: bold; }
+
+        .pos .stat-label, .pos .stat-value { color: var(--pos-color); }
+        .neu .stat-label, .neu .stat-value { color: var(--neu-color); }
+        .neg .stat-label, .neg .stat-value { color: var(--neg-color); }
+        .total { background: #F0F4F8; border-color: #D9E2EC; }
+        .total .stat-value { color: #102A43; }
+
+        /* Distribution Bar */
+        .distribution-container { background: var(--card-bg); padding: 12px; border-radius: 8px; border: 1px solid #EEEEEE; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 12px; }
+        .progress-bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 8px; margin-bottom: 8px; background-color: #E0E0E0; }
+        .bar-segment { height: 100%; transition: width 0.8s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .bar-pos { background-color: var(--pos-color); }
+        .bar-neu { background-color: var(--neu-color); }
+        .bar-neg { background-color: var(--neg-color); }
+        .progress-labels { display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; }
+
+        /* Image Containers (Word Cloud & Heatmap) */
+        .viz-container { background: var(--card-bg); border-radius: 8px; border: 1px solid #EEEEEE; padding: 12px; text-align: center; margin-bottom: 12px; }
+        .viz-image { width: 100%; border-radius: 4px; display: none; margin-top: 8px; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
-    <h3>Comment Analyzer</h3>
-    <p id="status">Open a YouTube video to begin.</p>
+    <div class="header">
+        <span class="brand-icon">YT</span>
+        <h3>Comment Analyzer</h3>
+    </div>
     
+    <p id="status">Open a YouTube video to begin.</p>
     <button id="analyzeBtn">Analyze Comments</button>
     
-    <div id="results" class="results">
-        <div class="stat">🟢 Positive: <span id="posCount">0</span></div>
-        <div class="stat">⚪ Neutral: <span id="neuCount">0</span></div>
-        <div class="stat">🔴 Negative: <span id="negCount">0</span></div>
-        <hr>
-        <div class="stat"><b>Total: <span id="totalCount">0</span></b></div>
+    <div id="results">
+        <div class="stats-grid">
+            <div class="stat-card pos">
+                <div class="stat-label">Positive</div>
+                <div class="stat-value" id="posCount">0</div>
+            </div>
+            <div class="stat-card neg">
+                <div class="stat-label">Negative</div>
+                <div class="stat-value" id="negCount">0</div>
+            </div>
+            <div class="stat-card neu full-width">
+                <div class="stat-label">Neutral</div>
+                <div class="stat-value" id="neuCount">0</div>
+            </div>
+
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Analyzed</div>
+                <div class="stat-value" id="kpiTotal">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Avg. Words</div>
+                <div class="stat-value" id="kpiLength">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Pos/Neg Ratio</div>
+                <div class="stat-value" id="kpiRatio">0x</div>
+            </div>
+        </div>
+        <div class="distribution-container">
+            <div class="stat-label" style="color: #102A43; text-align: left;">Sentiment Spread</div>
+            <div class="progress-bar">
+                <div id="barPos" class="bar-segment bar-pos" style="width: 0%"></div>
+                <div id="barNeu" class="bar-segment bar-neu" style="width: 0%"></div>
+                <div id="barNeg" class="bar-segment bar-neg" style="width: 0%"></div>
+            </div>
+            <div class="progress-labels">
+                <span id="percPos" style="color: var(--pos-color)">0%</span>
+                <span id="percNeu" style="color: var(--neu-color)">0%</span>
+                <span id="percNeg" style="color: var(--neg-color)">0%</span>
+            </div>
+        </div>
+
+        <!-- NEW: Heatmap Container -->
+        <div class="viz-container">
+            <div class="stat-label" style="color: #102A43; text-align: left;">Timeline Trend</div>
+            <img id="heatmapImg" class="viz-image" alt="Timeline Heatmap">
+        </div>
+
+        <!-- Existing Word Cloud Container -->
+        <div class="viz-container">
+            <div class="stat-label" style="color: #102A43; text-align: left;">Key Themes</div>
+            <img id="wordCloudImg" class="viz-image" alt="Word Cloud">
+        </div>
+        <button id="exportBtn" style="background-color: #102A43; margin-top: 16px;">
+            📥 Export Data & KPIs (CSV)
+        </button>
     </div>
 
-    <!-- Links to the logic script we will write next -->
     <script src="popup.js"></script>
 </body>
 </html>
