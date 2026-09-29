@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const resultsDiv = document.getElementById('results');
 
     // 🔑 PASTE YOUR YOUTUBE DATA API KEY HERE
-    const YOUTUBE_API_KEY = "Api_Key";
+    const YOUTUBE_API_KEY = "Api_here";
     let globalCsvContent = ""; //
 
     analyzeBtn.addEventListener('click', async () => {
@@ -78,12 +78,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // --- SEND 3 PARALLEL REQUESTS TO FASTAPI ---
             const [predictRes, cloudRes, heatmapRes] = await Promise.all([
-                fetch("http://127.0.0.1:8000/predict", {
+                fetch("http://ec2-51-20-131-45.eu-north-1.compute.amazonaws.com/predict", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ comment: textOnlyArray })
                 }),
-                fetch("http://127.0.0.1:8000/generate_wordcloud", {
+                fetch("http://ec2-51-20-131-45.eu-north-1.compute.amazonaws.com/generate_wordcloud", {
                     method: "POST",
                     headers: { 
                         "Accept": "image/png, application/json",
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     body: JSON.stringify({ comment: textOnlyArray })
                 }),
-                fetch("http://127.0.0.1:8000/generate_heatmap", {
+                fetch("http://ec2-51-20-131-45.eu-north-1.compute.amazonaws.com/generate_heatmap", {
                     method: "POST",
                     headers: {
                         "Accept": "image/png, application/json",
