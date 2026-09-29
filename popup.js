@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const resultsDiv = document.getElementById('results');
 
     // 🔑 PASTE YOUR YOUTUBE DATA API KEY HERE
-    const YOUTUBE_API_KEY = "Api_here";
+    const YOUTUBE_API_KEY = "AIzaSyAfTvQHJBoRbaPSsGcKkpf4yqxAmssm24g"; // Replace with your actual API key
     let globalCsvContent = ""; //
 
     analyzeBtn.addEventListener('click', async () => {
