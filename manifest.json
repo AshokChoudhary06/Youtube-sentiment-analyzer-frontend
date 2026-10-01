@@ -8,7 +8,7 @@
   ],
   "host_permissions": [
     "https://*.youtube.com/*",
-    "http://ec2-51-20-131-45.eu-north-1.compute.amazonaws.com/*",
+    "http://ec2-13-60-62-210.eu-north-1.compute.amazonaws.com/*",
     "https://www.googleapis.com/*"
   ],
   "action": {

@@ -78,12 +78,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // --- SEND 3 PARALLEL REQUESTS TO FASTAPI ---
             const [predictRes, cloudRes, heatmapRes] = await Promise.all([
-                fetch("http://ec2-51-20-131-45.eu-north-1.compute.amazonaws.com/predict", {
+                fetch("http://ec2-13-60-62-210.eu-north-1.compute.amazonaws.com/predict", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ comment: textOnlyArray })
                 }),
-                fetch("http://ec2-51-20-131-45.eu-north-1.compute.amazonaws.com/generate_wordcloud", {
+                fetch("http://ec2-13-60-62-210.eu-north-1.compute.amazonaws.com/generate_wordcloud", {
                     method: "POST",
                     headers: { 
                         "Accept": "image/png, application/json",
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     body: JSON.stringify({ comment: textOnlyArray })
                 }),
-                fetch("http://ec2-51-20-131-45.eu-north-1.compute.amazonaws.com/generate_heatmap", {
+                fetch("http://ec2-13-60-62-210.eu-north-1.compute.amazonaws.com/generate_heatmap", {
                     method: "POST",
                     headers: {
                         "Accept": "image/png, application/json",
